@@ -1,0 +1,1168 @@
+# EVPlug — Full Project Audit, Error Fix & Safe Improvement
+
+You are working on my existing Flutter project:
+
+**Project:** EVPlug
+**Project path:** `C:\Users\hp\evplugapp`
+**Platform:** Flutter / Dart
+**Development environment:** Windows + VS Code / Android Studio
+**Backend:** Firebase
+**Database:** Cloud Firestore
+**Authentication:** Firebase Authentication
+**AI:** Gemini
+**Maps / Location:** Google Maps, Google Places, Geolocator
+**Target:** Android application
+
+---
+
+# 1. MOST IMPORTANT RULES
+
+Before changing anything, thoroughly inspect and understand the existing project.
+
+### DO NOT:
+
+* Do NOT create a new Flutter project.
+* Do NOT delete or replace the existing project.
+* Do NOT redesign the application.
+* Do NOT change the existing UI/theme unless there is an actual bug requiring it.
+* Do NOT remove existing features.
+* Do NOT remove existing screens.
+* Do NOT remove Firebase functionality.
+* Do NOT remove Gemini functionality.
+* Do NOT remove Google Maps functionality.
+* Do NOT remove Firestore fields or collections unless they are demonstrably obsolete and their removal is necessary.
+* Do NOT rewrite working code just for style preferences.
+* Do NOT change the application's overall navigation flow.
+* Do NOT replace working packages unnecessarily.
+* Do NOT downgrade dependencies unless absolutely necessary.
+* Do NOT add random features just because they could be useful.
+* Do NOT make breaking architectural changes.
+* Do NOT expose API keys or secrets.
+* Do NOT commit keystores, passwords, Firebase private credentials, or other secrets.
+
+### DO:
+
+* Preserve everything that already works.
+* Fix actual errors.
+* Fix crashes.
+* Fix incorrect logic.
+* Fix null-safety problems.
+* Fix navigation problems.
+* Fix Firebase/Firestore integration problems.
+* Fix Android/build/configuration problems.
+* Fix obvious performance problems.
+* Fix obvious security problems.
+* Improve code only when the improvement is safe and useful.
+* Add missing pieces only when they are genuinely required for the existing app to work correctly.
+* Keep the existing visual design.
+* Keep the existing dark neon EV theme.
+* Keep the existing user experience unless there is a functional problem.
+* Make the smallest safe changes necessary.
+
+---
+
+# 2. UNDERSTAND THE APP FIRST
+
+Before modifying any file, inspect the complete project structure.
+
+Check:
+
+* `lib/`
+* `android/`
+* `ios/` if present
+* `assets/`
+* `test/`
+* `pubspec.yaml`
+* Firebase configuration
+* Google Maps configuration
+* AndroidManifest
+* Gradle files
+* Kotlin configuration
+* `firebase_options.dart`
+* `google-services.json`
+* environment/configuration files
+* authentication flow
+* Firestore structure
+* all Dart files
+* all routes/navigation
+* state management
+* API integrations
+* AI integration
+* location services
+* map implementation
+* release configuration
+
+Do not start making changes immediately.
+
+First build a mental model of how the application currently works.
+
+---
+
+# 3. EXISTING EVPLUG APP — FULL FUNCTIONAL DESCRIPTION
+
+EVPlug is an EV charging-station application.
+
+The main purpose is to allow an EV user to:
+
+1. Create/login to an account.
+2. Set up their EV/vehicle.
+3. View nearby EV charging stations.
+4. View charging stations on a map.
+5. Find the nearest charging station.
+6. Save charging stations.
+7. Add community charging stations.
+8. View station information.
+9. Use an AI assistant for EV charging/trip recommendations.
+10. Use the vehicle's estimated range and current battery percentage to determine whether a charging station may be reachable.
+11. Eventually support more advanced charging-station intelligence.
+
+The app should feel like a serious production EV application rather than a demo.
+
+---
+
+# 4. CURRENT APP FLOW
+
+The main flow is approximately:
+
+**Splash Screen**
+↓
+**Login**
+↓
+**OTP / Authentication**
+↓
+**Vehicle Setup**
+↓
+**Home**
+
+Existing screens/features include:
+
+* Splash screen
+* Login screen
+* OTP screen
+* Vehicle Router
+* Vehicle Setup screen
+* Home screen
+* Home content
+* Maps / map functionality
+* Saved Stations
+* Add Station
+* Profile
+* EV AI
+
+Some files/features may have been renamed or moved during development.
+
+Therefore, inspect the actual current project rather than assuming the old structure is unchanged.
+
+---
+
+# 5. EXISTING UI / DESIGN
+
+The application uses a **dark neon EV theme**.
+
+Important existing colors/design direction:
+
+* Background: approximately `Color(0xFF030712)`
+* Cards: approximately `Color(0xFF111827)`
+* Accent: approximately `Color(0xFF00FFAA)`
+
+The existing design should be preserved.
+
+The application should maintain:
+
+* Dark interface
+* Neon green EV accent
+* Modern cards
+* Rounded UI
+* Clean EV-focused design
+* Existing navigation
+* Existing Home layout
+
+### IMPORTANT
+
+**Do not redesign HomeContent.**
+
+If HomeContent is already working, leave its UI and structure intact.
+
+Only make changes if required to fix a real bug or broken functionality.
+
+---
+
+# 6. HOME SCREEN
+
+The Home screen currently contains functionality such as:
+
+### Map
+
+A Google Map appears near the top.
+
+It can show charging station markers.
+
+### Quick Actions
+
+Existing quick actions include functionality such as:
+
+* Find Station
+* Nearby Stations
+* Saved
+
+Existing behavior should be preserved.
+
+For example:
+
+**Find Station**
+→ opens/navigation toward the nearest station or Google Maps.
+
+**Nearby Stations**
+→ scrolls to nearby station section.
+
+**Saved**
+→ opens Saved Stations.
+
+### Nearby Stations
+
+Shows charging stations near the user's location.
+
+### Featured Stations
+
+Shows featured/relevant charging stations.
+
+### EV Statistics
+
+Displays EV-related information.
+
+Do not remove any of these existing capabilities.
+
+---
+
+# 7. FIREBASE / FIRESTORE
+
+The project uses Firebase.
+
+Inspect the current Firebase configuration carefully.
+
+Expected important Firestore collections include:
+
+## users
+
+User document ID:
+
+`user.uid`
+
+Existing fields may include:
+
+* `vehicleAdded`
+* `vehicleNumber`
+* `vehicleName`
+* `batteryRange`
+* `carName`
+* `estimatedRangeKm`
+* `stationsAdded`
+* `savedStations`
+
+Do not assume every field is currently implemented exactly this way.
+
+Inspect the real code/database usage first.
+
+---
+
+# 8. CHARGING STATIONS
+
+The application uses charging stations from multiple possible sources.
+
+Expected charging station collection:
+
+`charging_stations`
+
+Existing fields include or may include:
+
+* `stationName`
+* `location`
+* `powerOutput`
+* `price`
+* `latitude`
+* `longitude`
+* `addedByUid`
+* `createdAt`
+* `isActive`
+* `source`
+
+Possible source values include:
+
+* Google
+* EVPlug community
+
+Do not delete or rename these fields without a very strong reason.
+
+Check all Firestore reads/writes for consistency.
+
+---
+
+# 9. ADD STATION
+
+The Add Station functionality allows users/community members to add charging stations.
+
+Existing fields include:
+
+* Station name
+* Location
+* Power output
+* Price
+
+Location can use the user's location through Geolocator.
+
+Check for:
+
+* validation
+* null values
+* incorrect coordinates
+* permission handling
+* Firestore write errors
+* duplicate submissions
+* invalid numeric values
+* loading states
+* error handling
+
+Do not remove the existing Add Station feature.
+
+---
+
+# 10. SAVED STATIONS
+
+The application has Saved Stations functionality.
+
+Users can save stations.
+
+The user document may contain:
+
+`savedStations`
+
+Check:
+
+* adding/removing saved stations
+* duplicate saves
+* Firestore consistency
+* loading states
+* offline/error behavior
+* whether saved station IDs still exist
+* null safety
+
+Preserve the feature.
+
+---
+
+# 11. PROFILE
+
+Profile functionality includes information such as:
+
+* User name
+* Phone/email
+* Vehicle details
+* Saved stations count
+* Stations added count
+* Logout
+
+Vehicle number is intended to be automatically capitalized.
+
+Estimated range should accept numeric values only.
+
+Check all of this for correctness.
+
+Do not redesign the Profile screen.
+
+---
+
+# 12. VEHICLE SETUP
+
+Vehicle Setup collects information such as:
+
+* Vehicle number
+* Vehicle name
+* Estimated range in km
+
+The vehicle information is later used by the EV AI.
+
+Check:
+
+* validation
+* Firestore persistence
+* loading state
+* navigation
+* update behavior
+* null handling
+* numeric validation
+* whether existing users can update their vehicle
+
+Do not remove existing fields.
+
+---
+
+# 13. EV AI
+
+EV AI is one of the important features of EVPlug.
+
+The AI is integrated with Gemini.
+
+The AI should use vehicle information from Firestore.
+
+Existing vehicle context includes:
+
+* Car name
+* Vehicle number
+* Estimated full range
+* Battery percentage
+* Remaining estimated range
+
+The application calculates:
+
+`remainingRangeKm`
+
+based on:
+
+`estimatedRangeKm × batteryPercentage / 100`
+
+The AI should help users with:
+
+* charging recommendations
+* nearest station
+* cheapest station
+* fast charger
+* best station
+* stations on a route
+* trip planning
+
+Existing quick actions include concepts such as:
+
+* Fast Charger
+* Cheapest
+* Best Station
+* On Route
+
+Preserve these.
+
+---
+
+# 14. EV AI SAFETY / LOGIC RULES
+
+The Gemini prompt already contains important rules.
+
+Preserve these principles:
+
+### Vehicle context
+
+Use available vehicle information.
+
+### Do not invent data
+
+The AI must never invent:
+
+* battery percentage
+* vehicle range
+* charging station availability
+* station prices
+* station specifications
+* live data
+
+If required information is missing, the AI should say so.
+
+### Reachability
+
+The AI must not claim that a station is reachable unless the remaining range supports it.
+
+### Remaining range is an estimate
+
+The AI should treat range as an estimate.
+
+### Safety reserve
+
+Existing logic uses a safety reserve around:
+
+* 15% battery
+
+or
+
+* approximately 20 km
+
+Preserve the existing safety concept unless there is a clear technical problem.
+
+### Real-world range factors
+
+The AI should account for factors such as:
+
+* AC usage
+* speed
+* traffic
+* uphill roads
+* vehicle load
+* weather
+
+### Driving suggestions
+
+Existing suggestions may include:
+
+* moderate AC temperature
+* lower fan speed
+* smooth acceleration
+* regenerative braking
+
+Preserve these where appropriate.
+
+### Live data
+
+If live charging station data is not actually connected, the AI must clearly state that it does not have live availability rather than pretending that it does.
+
+---
+
+# 15. GOOGLE MAPS / LOCATION
+
+The application uses:
+
+* Google Maps
+* Google Places
+* Geolocator
+
+Inspect:
+
+* API configuration
+* AndroidManifest
+* permissions
+* location permissions
+* runtime permission handling
+* Google Maps initialization
+* marker creation
+* station coordinates
+* user's current location
+* API failures
+* invalid coordinates
+
+Do not expose API keys.
+
+If API keys are hardcoded in unsafe places, identify the problem and implement the safest practical fix without breaking the application.
+
+---
+
+# 16. AUTHENTICATION
+
+Existing authentication includes Firebase Authentication and OTP/login functionality.
+
+Google Sign-In may also exist.
+
+Inspect:
+
+* Firebase Auth
+* OTP
+* login
+* logout
+* authentication state
+* Google Sign-In if currently implemented
+* error handling
+* session persistence
+* navigation after authentication
+
+Make sure authentication does not accidentally bypass required vehicle setup.
+
+---
+
+# 17. NAVIGATION
+
+Inspect the complete navigation graph.
+
+Make sure:
+
+* Splash correctly determines authentication state.
+* Logged-out users go to login.
+* Logged-in users go to the correct screen.
+* Users without vehicle setup are sent to Vehicle Setup.
+* Users with vehicle setup can access Home.
+* Back navigation does not create broken loops.
+* Logout correctly clears the session and returns to Login.
+* Every route points to an existing screen.
+
+Do not change the navigation architecture unless necessary.
+
+---
+
+# 18. DEPENDENCIES
+
+Existing packages may include:
+
+* `firebase_core`
+* `firebase_auth`
+* `cloud_firestore`
+* `google_sign_in`
+* `shared_preferences`
+* `geolocator`
+* `google_maps_flutter`
+* `url_launcher`
+* `package_info_plus`
+* `flutter_gemini`
+* `http`
+
+Check `pubspec.yaml` and determine what is actually used.
+
+### IMPORTANT
+
+Do NOT remove a dependency simply because it looks unused without checking the entire project.
+
+Do NOT add dependencies unless:
+
+1. They are genuinely required.
+2. The existing Flutter/Dart version supports them.
+3. They solve an actual problem.
+4. There isn't already an existing dependency capable of doing the same thing.
+
+---
+
+# 19. ANDROID / BUILD CONFIGURATION
+
+Thoroughly inspect:
+
+* Gradle
+* Kotlin
+* AndroidManifest.xml
+* Firebase configuration
+* `google-services.json`
+* application ID/package name
+* SDK versions
+* min SDK
+* target SDK
+* Java/JDK configuration
+* signing configuration
+* release build configuration
+* permissions
+* Google Maps configuration
+
+The application should remain compatible with the current Flutter installation.
+
+Do not randomly upgrade everything.
+
+If there is a build error, identify the actual root cause first.
+
+---
+
+# 20. RELEASE / PLAY STORE
+
+The project has already been prepared for Play Store release.
+
+There is an existing release signing setup.
+
+A production keystore exists under the Android project.
+
+There may also be:
+
+`android/key.properties`
+
+and a release configuration.
+
+### VERY IMPORTANT
+
+Never delete:
+
+* keystore
+* signing configuration
+* release configuration
+
+unless there is a serious reason and you have verified the replacement.
+
+Never print or expose passwords/secrets.
+
+Make sure `.gitignore` protects sensitive signing information.
+
+---
+
+# 21. ERROR AUDIT
+
+Perform a complete audit.
+
+Look for:
+
+### Dart errors
+
+* syntax errors
+* compile errors
+* null safety errors
+* type mismatches
+* missing imports
+* unused/broken references
+* async errors
+* incorrect `BuildContext` usage
+* state update problems
+* disposed widget problems
+
+### Flutter errors
+
+* widget lifecycle problems
+* `setState()` after dispose
+* FutureBuilder/StreamBuilder issues
+* unnecessary rebuilds
+* broken navigation
+* missing loading states
+* missing error states
+
+### Firebase errors
+
+* incorrect collection names
+* incorrect field names
+* missing document handling
+* permission errors
+* incorrect queries
+* failed writes
+* race conditions
+* authentication state problems
+
+### Maps errors
+
+* missing API configuration
+* location permission problems
+* invalid coordinates
+* marker problems
+* map initialization problems
+
+### AI errors
+
+* Gemini initialization problems
+* invalid API usage
+* prompt/context problems
+* crashes when vehicle data is missing
+* incorrect range calculations
+* AI claiming unavailable live information
+
+### Android errors
+
+* Gradle errors
+* Kotlin errors
+* manifest errors
+* package mismatch
+* Firebase configuration mismatch
+* signing errors
+* permission problems
+
+---
+
+# 22. PERFORMANCE AUDIT
+
+Check for obvious performance problems.
+
+Especially inspect:
+
+* Firestore listeners
+* repeated queries
+* unnecessary rebuilds
+* excessive API calls
+* map marker rebuilding
+* image loading
+* AI requests
+* location updates
+* memory leaks
+
+Do not over-optimize working code.
+
+Only make meaningful improvements.
+
+---
+
+# 23. SECURITY AUDIT
+
+Check for:
+
+* API keys
+* Firebase configuration
+* hardcoded secrets
+* unsafe Firestore rules
+* unrestricted station creation
+* unrestricted user data access
+* exposed authentication information
+* insecure client-side assumptions
+
+Do not break the app while improving security.
+
+If something requires Firebase Console changes rather than code changes, clearly explain it.
+
+---
+
+# 24. FIRESTORE SECURITY
+
+Inspect how users access:
+
+`users`
+
+and:
+
+`charging_stations`
+
+Ensure the application does not accidentally allow one user to modify another user's private data.
+
+Community station functionality should also be checked for abuse.
+
+Do not blindly rewrite Firestore rules without understanding the current application.
+
+If rules are not available in the project, report that separately.
+
+---
+
+# 25. TESTING
+
+After making necessary fixes:
+
+Run appropriate Flutter checks.
+
+At minimum, attempt:
+
+`flutter analyze`
+
+and:
+
+`flutter test`
+
+If possible, also verify:
+
+`flutter build apk --debug`
+
+and/or:
+
+`flutter build appbundle --release`
+
+depending on the current environment.
+
+If a command cannot be executed because of environment/tooling limitations, report that instead of pretending it succeeded.
+
+---
+
+# 26. CHANGE POLICY
+
+Use this decision process for every potential modification:
+
+### Level 1 — Critical
+
+Fix immediately.
+
+Examples:
+
+* compile errors
+* crashes
+* broken authentication
+* broken navigation
+* broken Firebase initialization
+* broken release build
+* data corruption
+* security vulnerabilities
+
+### Level 2 — Important
+
+Fix if clearly confirmed.
+
+Examples:
+
+* incorrect range calculation
+* broken station saving
+* incorrect map location
+* missing permission handling
+* Firestore query problems
+* AI receiving incorrect vehicle context
+
+### Level 3 — Improvement
+
+Only implement if it is small, safe, and clearly beneficial.
+
+Examples:
+
+* better error messages
+* loading indicators
+* null handling
+* minor performance improvements
+* better validation
+
+### Level 4 — New Feature
+
+DO NOT implement automatically.
+
+Instead, report it as a recommendation.
+
+---
+
+# 27. POSSIBLE FUTURE FEATURES
+
+While auditing the application, identify whether these would improve EVPlug:
+
+* charger type
+* connector type
+* station reviews
+* review count
+* average rating
+* station photos
+* report station
+* station amenities
+* live charger availability
+* charging session tracking
+* navigation integration
+* route-aware charging
+* real-time station status
+* community verification
+* station moderation
+* better station filtering
+* price comparison
+* charging-cost estimation
+* trip energy estimation
+* battery-aware route planning
+* notification system
+* favorite vehicles
+* charging history
+
+### IMPORTANT
+
+Do NOT automatically build these.
+
+First report which ones are genuinely needed for the current architecture and why.
+
+---
+
+# 28. ARCHITECTURE REQUIREMENT
+
+The application should remain scalable.
+
+Inspect the current architecture and determine whether it has reasonable separation between:
+
+* UI/screens
+* widgets
+* models
+* services
+* Firebase
+* authentication
+* AI
+* maps/location
+* station data
+* utilities
+* configuration
+
+Do not restructure the entire project just for theoretical cleanliness.
+
+If the current architecture is already functional, preserve it.
+
+If a small architectural improvement is necessary to prevent bugs or make future development safer, implement only that small improvement.
+
+---
+
+# 29. IMPORTANT EXISTING FILES
+
+Files that have existed during development include:
+
+* `splash_screen.dart`
+* `login_screen.dart`
+* `otp_screen.dart`
+* `vehicle_router.dart`
+* `vehicle_setup_screen.dart`
+* `home_screen.dart`
+* `home_content.dart`
+* `saved_screen.dart`
+* `add_station.dart`
+* `profile_screen.dart`
+* `ev_ai_screen.dart`
+* `firebase_options.dart`
+
+There may be other files or renamed files.
+
+**Inspect the actual project and do not assume these files are unchanged.**
+
+---
+
+# 30. DO NOT REMOVE EXISTING FUNCTIONALITY
+
+This is extremely important.
+
+If you find something that looks unnecessary, do NOT immediately delete it.
+
+First determine:
+
+1. Is it used somewhere?
+2. Is it part of navigation?
+3. Is it required by Firebase?
+4. Is it required by Android?
+5. Is it required for release?
+6. Is it used indirectly?
+7. Is it part of future functionality?
+8. Does another file depend on it?
+
+Only remove something if you can confidently prove it is unused, redundant, and safe to remove.
+
+Prefer keeping code over deleting it when uncertain.
+
+---
+
+# 31. BEFORE EDITING
+
+Create an internal audit of:
+
+* Current project structure
+* Current architecture
+* Current features
+* Current navigation
+* Current dependencies
+* Current Firebase usage
+* Current AI usage
+* Current Maps usage
+* Current Android configuration
+* Current build status
+* Current errors
+* Current warnings
+
+Then identify:
+
+### Critical problems
+
+### Important problems
+
+### Minor problems
+
+### Recommended improvements
+
+### Future feature recommendations
+
+---
+
+# 32. THEN FIX THE PROJECT
+
+After understanding everything:
+
+1. Fix critical errors.
+2. Fix important functional errors.
+3. Fix safe minor errors.
+4. Make only necessary architectural improvements.
+5. Preserve all existing functionality.
+6. Preserve the current UI.
+7. Preserve the current theme.
+8. Preserve Firebase integration.
+9. Preserve AI integration.
+10. Preserve Maps integration.
+11. Preserve release configuration.
+
+Do not implement unnecessary new features during this pass.
+
+---
+
+# 33. VERIFY EVERYTHING AFTER CHANGES
+
+After changes:
+
+Run:
+
+`flutter analyze`
+
+Then:
+
+`flutter test`
+
+Then, if possible:
+
+`flutter build apk --debug`
+
+Then, if possible:
+
+`flutter build appbundle --release`
+
+Also check that:
+
+* Login works
+* OTP works
+* Vehicle Setup works
+* Home opens
+* Map works
+* Nearby stations work
+* Saved stations work
+* Add Station works
+* Profile works
+* Logout works
+* EV AI opens
+* Vehicle context reaches EV AI
+* Battery/range calculation works
+* Station navigation works
+* Firebase operations work
+* Release build still works
+
+---
+
+# 34. FINAL REPORT
+
+After completing the audit and fixes, give me a concise but complete report containing:
+
+## A. Project Understanding
+
+Explain the current architecture and how the app works.
+
+## B. Problems Found
+
+List every actual error/problem found.
+
+For each:
+
+* File
+* Problem
+* Severity
+* Root cause
+* Fix applied
+
+## C. Files Changed
+
+List every file you modified.
+
+For each file, explain what changed.
+
+## D. Files NOT Changed
+
+Mention important files that were inspected but intentionally left unchanged.
+
+## E. Features Preserved
+
+Confirm that existing major features remain intact.
+
+## F. Features Added
+
+Only list features that were genuinely necessary and actually added.
+
+## G. Recommended Future Improvements
+
+List useful improvements that were NOT implemented.
+
+Separate them from the fixes.
+
+## H. Build/Test Results
+
+Report the actual results of:
+
+* `flutter analyze`
+* `flutter test`
+* debug build
+* release build
+
+Do not claim success unless the command actually succeeded.
+
+## I. Remaining Issues
+
+If anything cannot be fixed because it requires:
+
+* Firebase Console
+* Google Cloud Console
+* API configuration
+* Play Console
+* missing credentials
+* external service configuration
+
+clearly identify it.
+
+---
+
+# 35. GOLDEN RULE
+
+**EVPlug is an existing application, not a blank project.**
+
+Your job is to:
+
+**UNDERSTAND → AUDIT → FIX → VERIFY → REPORT**
+
+Not:
+
+**DELETE → REWRITE → REDESIGN**
+
+Protect the existing application and its functionality.
+
+Make the minimum necessary changes to make EVPlug stable, maintainable, secure, and ready for continued development.
+
+If you are uncertain whether something should be removed or changed, **keep it and report it instead of deleting it.**

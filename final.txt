@@ -1,0 +1,236 @@
+I am working on my Flutter app **EVPlug INDIA**.
+
+Project path:
+`D:\evplugapp`
+
+I want you to improve the existing notification and phone OTP experience.
+
+## IMPORTANT RULES
+
+* Do NOT redesign the existing UI.
+* Do NOT change the existing theme, colors, fonts, navigation, or layout unnecessarily.
+* Do NOT remove any existing fields or functionality.
+* Do NOT modify unrelated screens/files.
+* Preserve the current login flow:
+  **Splash → Login → OTP → Vehicle Setup/Home**
+* Phone login should remain the only login method.
+* Before changing code, inspect the existing implementation and use the current architecture/packages wherever possible.
+* Make production-quality changes suitable for a Play Store app.
+
+---
+
+# 1. NOTIFICATION EVERY 6 HOURS
+
+Add a local notification system that sends a notification to the user **every 6 hours**.
+
+Requirements:
+
+* Notification should repeat every 6 hours.
+* It should continue even when the app is closed, where Android allows scheduled notifications.
+* Do not send duplicate notifications.
+* Do not create multiple repeating schedules every time the app starts.
+* The notification should have EVPlug branding/name.
+
+Example:
+
+**Title:**
+`EVPlug Reminder ⚡`
+
+**Body:**
+`Check nearby EV charging stations and plan your next charge.`
+
+Use the existing notification implementation if one already exists. If a notification package is already installed, reuse it instead of adding another package unnecessarily.
+
+Handle:
+
+* Android notification permission.
+* Android notification channel.
+* Notification scheduling.
+* App restart without creating duplicate schedules.
+* Proper initialization.
+
+If Android version requirements mean exact 6-hour repeating notifications need a different scheduling approach, implement the most reliable Android-compatible solution rather than pretending an unsupported periodic schedule is exact.
+
+---
+
+# 2. LOGIN OTP — SHOW CLEAR VALID/INVALID RESULT
+
+Improve the existing phone OTP flow.
+
+When the user enters the OTP and submits it:
+
+### Correct OTP
+
+Show a clear success state and continue with the existing navigation.
+
+Do NOT add unnecessary delays.
+
+### Incorrect OTP
+
+Immediately show a clear error such as:
+
+`Invalid OTP. Please check the OTP and try again.`
+
+Do not silently fail.
+
+### Expired OTP
+
+If Firebase reports that the OTP has expired, show:
+
+`OTP expired. Please request a new OTP.`
+
+Do not show a generic error if Firebase provides a more specific reason.
+
+Do not break the existing Firebase Phone Authentication flow.
+
+---
+
+# 3. OTP SCREEN SHOULD OPEN INSTANTLY AFTER PHONE NUMBER
+
+Currently, after the user types the phone number and presses the login/continue button, there is an unnecessary delay before the OTP screen appears.
+
+Improve this experience.
+
+Expected flow:
+
+1. User enters phone number.
+2. User taps Continue/Send OTP.
+3. Firebase sends OTP.
+4. OTP screen should appear as soon as the verification process is initiated/available.
+5. Show a small loading indicator only where necessary.
+6. Do not add artificial delays such as `Future.delayed(...)`.
+7. Do not wait unnecessarily for unrelated operations before navigating to the OTP screen.
+
+Keep Firebase verification callbacks working correctly.
+
+Do NOT navigate to OTP if Firebase rejects the phone number immediately.
+
+---
+
+# 4. MAKE OTP DIGITS VISIBLE WHILE TYPING
+
+Currently, when the user fills the OTP, the digits are not clearly visible while entering them.
+
+Fix the OTP input.
+
+Requirements:
+
+* OTP digits must be clearly visible while the user is entering them.
+* Do NOT make the OTP permanently hidden like a password.
+* Each entered digit should remain visible in the OTP boxes/input field.
+* Maintain the existing OTP UI design as much as possible.
+* Keep automatic OTP detection/autofill if it already exists.
+* Keep cursor/focus behavior working.
+* Do not interfere with Firebase verification.
+
+If the current OTP widget has a setting such as:
+
+`obscureText`
+
+or an equivalent masking property, configure it so that OTP digits are visible.
+
+---
+
+# 5. OTP UX
+
+Make the OTP screen feel responsive.
+
+Requirements:
+
+* Automatically focus the OTP field when the screen opens.
+* Open the numeric keyboard automatically if the current implementation supports it.
+* Allow the user to paste/autofill the OTP.
+* Do not unnecessarily dismiss the keyboard.
+* Show a loading state while verification is happening.
+* Prevent multiple simultaneous verification requests.
+* Show clear success/error feedback.
+
+Do not redesign the screen.
+
+---
+
+# 6. FIREBASE ERROR HANDLING
+
+Use the existing Firebase Phone Authentication implementation.
+
+Handle common errors appropriately, including:
+
+* invalid verification code
+* session expired
+* too many requests
+* invalid phone number
+* network failure
+
+Show user-friendly messages instead of raw Firebase exception text.
+
+Do not expose technical Firebase error messages unnecessarily.
+
+---
+
+# 7. IMPORTANT CODE SAFETY
+
+Before making changes:
+
+1. Inspect the existing:
+
+   * login screen
+   * OTP screen
+   * Firebase authentication service/helper
+   * notification service, if one exists
+   * `pubspec.yaml`
+
+2. Identify the exact files that need modification.
+
+3. Do not modify unrelated files.
+
+4. Do not replace the existing authentication architecture unnecessarily.
+
+5. Do not create duplicate notification services.
+
+6. Do not create duplicate OTP verification logic.
+
+7. Preserve the existing `VehicleCheckRouter` and post-login navigation.
+
+---
+
+# 8. FINAL VERIFICATION
+
+After implementing:
+
+Run:
+
+```bash
+flutter analyze
+```
+
+Fix any errors introduced by your changes.
+
+Then verify:
+
+### Login
+
+* Enter phone number.
+* OTP screen opens without unnecessary delay.
+* OTP digits are visible while entering.
+* Correct OTP logs in successfully.
+* Wrong OTP shows `Invalid OTP`.
+* Expired OTP shows an appropriate message.
+* Existing Vehicle Setup/Home routing still works.
+
+### Notifications
+
+* Notification permission is requested where required.
+* EVPlug notification channel works.
+* Only one 6-hour notification schedule exists.
+* Restarting the app does not create duplicate schedules.
+* Notification content is correct.
+
+Do not make unrelated UI or functionality changes.
+
+At the end, provide:
+
+1. Files changed.
+2. What was changed in each file.
+3. Any package added/changed.
+4. Any Android permission/configuration added.
+5. Result of `flutter analyze`.
