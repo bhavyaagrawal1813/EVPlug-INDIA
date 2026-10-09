@@ -1,17 +1,73 @@
-# evplug_new
+# ⚡ EVPlug INDIA
 
-A new Flutter project.
+**Discover. Charge. Drive.**
 
-## Getting Started
+EVPlug INDIA is a Flutter-based electric vehicle charging station finder designed to help EV users discover charging locations and contribute station information.
 
-This project is a starting point for a Flutter application.
+## 🚀 Features
 
-A few resources to get you started if this is your first Flutter project:
+* 📍 Find nearby EV charging stations.
+* 🗺️ Explore charging stations on a map.
+* ➕ Add community charging stations.
+* 💾 Save favourite stations.
+* 🚗 Set up your vehicle profile.
+* 🔐 Phone number authentication.
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+## 🛠️ Technology Stack
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+* **Frontend:** Flutter and Dart
+* **Authentication:** Firebase Authentication
+* **Database:** Cloud Firestore
+* **Maps:** Google Maps Platform
+
+## 📱 Getting Started
+
+### Prerequisites
+
+* Flutter SDK
+* Dart SDK
+* Android Studio or Visual Studio Code
+
+### Installation
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/bhavyaagrawal1813/EVPlug-INDIA.git
+   ```
+
+2. Open the project folder:
+
+   ```bash
+   cd EVPlug-INDIA
+   ```
+
+3. Install dependencies:
+
+   ```bash
+   flutter pub get
+   ```
+
+4. Configure Firebase and the required Google Maps settings.
+
+5. Run the application:
+
+   ```bash
+   flutter run
+   ```
+
+## 🔐 Security
+
+Never commit private API credentials, service-account files, signing keys, or other sensitive information. Configure required services and credentials securely.
+
+## 📌 Project Status
+
+EVPlug INDIA is under development.
+
+## 👨‍💻 Developer
+
+**Bhavya Agrawal**
+
+---
+
+*Built with Flutter to support the growing electric vehicle ecosystem in India.*
